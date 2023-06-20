@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace MoreMountains.Tools
+namespace YRTool
 {
 	/// <summary>
-	/// Add this class to an object that you expect to pool from an objectPooler. 
-	/// Note that these objects can't be destroyed by calling Destroy(), they'll just be set inactive (that's the whole point).
+	/// 对象池对象
+	/// Destroy()时只是设成了未激活
 	/// </summary>
 	[AddComponentMenu("YRTool/Tools/Object Pool/YRPoolableObject")]
-	public class PoolableObject : MMObjectBounds
+	public class PoolableObject : ObjectBounds
 	{
 		[Header("Events")]
 		public UnityEvent ExecuteOnEnable;
@@ -19,10 +19,11 @@ namespace MoreMountains.Tools
 
 		[Header("Poolable Object")]
 		/// The life time, in seconds, of the object. If set to 0 it'll live forever, if set to any positive value it'll be set inactive after that time.
+		/// 生命周期，单位秒，如果设为0就是永远不自动销毁。
 		public float LifeTime = 0f;
 
 		/// <summary>
-		/// Turns the instance inactive, in order to eventually reuse it.
+		/// 设为未激活，等待复用
 		/// </summary>
 		public virtual void Destroy()
 		{
@@ -30,7 +31,7 @@ namespace MoreMountains.Tools
 		}
 
 		/// <summary>
-		/// Called every frame
+		/// 每帧动作
 		/// </summary>
 		protected virtual void Update()
 		{
@@ -38,20 +39,20 @@ namespace MoreMountains.Tools
 		}
 
 		/// <summary>
-		/// When the objects get enabled (usually after having been pooled from an ObjectPooler, we initiate its death countdown.
+		/// 激活时初始化
 		/// </summary>
 		protected virtual void OnEnable()
 		{
 			Size = GetBounds().extents * 2;
 			if (LifeTime > 0f)
 			{
-				Invoke("Destroy", LifeTime);	
+				Invoke(nameof(Destroy), LifeTime);	
 			}
 			ExecuteOnEnable?.Invoke();
 		}
 
 		/// <summary>
-		/// When the object gets disabled (maybe it got out of bounds), we cancel its programmed death
+		/// 取消激活时
 		/// </summary>
 		protected virtual void OnDisable()
 		{
@@ -60,7 +61,7 @@ namespace MoreMountains.Tools
 		}
 
 		/// <summary>
-		/// Triggers the on spawn complete event
+		/// 生成成功事件
 		/// </summary>
 		public virtual void TriggerOnSpawnComplete()
 		{

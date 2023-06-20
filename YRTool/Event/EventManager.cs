@@ -20,50 +20,15 @@ namespace YRTool
 		{
 			EventName = newName;
 		}
-		static SimpleGameEvent e;
-		public static void Trigger(string newName)
-		{
-			e.EventName = newName;
-			EventManager.TriggerEvent(e);
-		}
+		//static SimpleGameEvent e;
+		//public static void Trigger(string newName)
+		//{
+		//	e.EventName = newName;
+		//	EventManager.TriggerEvent(e);
+		//}
 	}
 
 	/// <summary>
-	/// This class handles event management, and can be used to broadcast events throughout the game, to tell one class (or many) that something's happened.
-	/// Events are structs, you can define any kind of events you want. This manager comes with MMGameEvents, which are 
-	/// basically just made of a string, but you can work with more complex ones if you want.
-	/// 
-	/// To trigger a new event, from anywhere, do YOUR_EVENT.Trigger(YOUR_PARAMETERS)
-	/// So MMGameEvent.Trigger("Save"); for example will trigger a Save MMGameEvent
-	/// 
-	/// you can also call MMEventManager.TriggerEvent(YOUR_EVENT);
-	/// For example : MMEventManager.TriggerEvent(new MMGameEvent("GameStart")); will broadcast an MMGameEvent named GameStart to all listeners.
-	///
-	/// To start listening to an event from any class, there are 3 things you must do : 
-	///
-	/// 1 - tell that your class implements the MMEventListener interface for that kind of event.
-	/// For example: public class GUIManager : Singleton<GUIManager>, MMEventListener<MMGameEvent>
-	/// You can have more than one of these (one per event type).
-	///
-	/// 2 - On Enable and Disable, respectively start and stop listening to the event :
-	/// void OnEnable()
-	/// {
-	/// 	this.MMEventStartListening<MMGameEvent>();
-	/// }
-	/// void OnDisable()
-	/// {
-	/// 	this.MMEventStopListening<MMGameEvent>();
-	/// }
-	/// 
-	/// 3 - Implement the MMEventListener interface for that event. For example :
-	/// public void OnMMEvent(MMGameEvent gameEvent)
-	/// {
-	/// 	if (gameEvent.EventName == "GameOver")
-	///		{
-	///			// DO SOMETHING
-	///		}
-	/// } 
-	/// will catch all events of type MMGameEvent emitted from anywhere in the game, and do something if it's named GameOver
 	/// 事件系统 观察者模式
 	/// 首先，观察者类继承 EventListener<MMGameEvent> 并实现接口
 	/// 接着在观察者类中的激活函数和取消激活函数中登记/注销
@@ -208,6 +173,8 @@ namespace YRTool
 
 	/// <summary>
 	/// 注册和注销事件监听
+	/// 这里用到了类的扩展方法，使用首参数为this+类名的写法，可以为现有类扩展新函数
+	/// 为所有EventListener扩展了Start和Stop方法
 	/// </summary>
 	public static class EventRegister
 	{

@@ -4,15 +4,14 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 namespace YRTool
-{	
+{
 	/// <summary>
-	/// A base class, meant to be extended depending on the use (simple, multiple object pooler), and used as an interface by the spawners.
-	/// Still handles common stuff like singleton and initialization on start().
-	/// DO NOT add this class to a prefab, nothing would happen. Instead, add SimpleObjectPooler or MultipleObjectPooler.
+	/// 对象池操作器基类
+	/// 抽象类，不能直接使用，使用SimpleObjectPooler 或 MultipleObjectPooler类替代
 	/// </summary>
 	public abstract class ObjectPooler : MonoBehaviour
 	{
-		/// singleton pattern
+		/// 单例
 		public static ObjectPooler Instance;
 		/// if this is true, the pool will try not to create a new waiting pool if it finds one with the same name.
 		public bool MutualizeWaitingPools = false;

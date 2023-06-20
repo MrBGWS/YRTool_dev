@@ -3,22 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-namespace MoreMountains.Tools
+namespace YRTool.Tools
 {
 	/// <summary>
-	/// A simple object pool outputting a single type of objects
+	/// 一个输出简单对象的对象池操作器
 	/// </summary>
-	[AddComponentMenu("More Mountains/Tools/Object Pool/MMSimpleObjectPooler")]
-	public class MMSimpleObjectPooler : MMObjectPooler 
+	[AddComponentMenu("YRTool/Tools/Object Pool/SimpleObjectPooler")]
+	public class SimpleObjectPooler : ObjectPooler 
 	{
 		/// the game object we'll instantiate 
 		public GameObject GameObjectToPool;
-		/// the number of objects we'll add to the pool
+		/// 对象池大小
 		public int PoolSize = 20;
-		/// if true, the pool will automatically add objects to the itself if needed
+		/// 为真则对象池会自动填充
 		public bool PoolCanExpand = true;
 	    
-		public List<MMSimpleObjectPooler> Owner { get; set; }
+		public List<SimpleObjectPooler> Owner { get; set; }
 		private void OnDestroy() { Owner?.Remove(this); }
 
 		/// <summary>
@@ -63,7 +63,7 @@ namespace MoreMountains.Tools
 		}
 	    	
 		/// <summary>
-		/// This method returns one inactive object from the pool
+		/// 返回一个未激活的对象
 		/// </summary>
 		/// <returns>The pooled game object.</returns>
 		public override GameObject GetPooledGameObject()
@@ -85,11 +85,11 @@ namespace MoreMountains.Tools
 			// if the pool is empty and can't grow, we return nothing.
 			return null;
 		}
-		
+
 		/// <summary>
-		/// Adds one object of the specified type (in the inspector) to the pool.
+		/// 将指定类型的一个对象添加到池中
 		/// </summary>
-		/// <returns>The one object to the pool.</returns>
+		/// <returns>返回添加的对象</returns>
 		protected virtual GameObject AddOneObjectToThePool()
 		{
 			if (GameObjectToPool == null)
