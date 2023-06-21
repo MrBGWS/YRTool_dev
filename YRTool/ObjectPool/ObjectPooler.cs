@@ -13,14 +13,14 @@ namespace YRTool
 	{
 		/// 单例
 		public static ObjectPooler Instance;
-		/// if this is true, the pool will try not to create a new waiting pool if it finds one with the same name.
+		/// 如果为真则在找到相同名字的对象池时不会创建一个新的池，默认false为会创建
 		public bool MutualizeWaitingPools = false;
-		/// if this is true, all waiting and active objects will be regrouped under an empty game object. Otherwise they'll just be at top level in the hierarchy
+		/// 池化对象会生成在一个空对象池物体下，否则就不设置父物体
 		public bool NestWaitingPool = true;
-		/// if this is true, the waiting pool will be nested under this object
+		/// 对象池物体会以pooler作为父物体
 		public bool NestUnderThis = false;
 
-		/// this object is just used to group the pooled objects
+		/// 用来作父物体的对象
 		protected GameObject _waitingPool = null;
 		protected ObjectPool _objectPool;
 		protected const int _initialPoolsListCapacity = 5;
@@ -29,7 +29,7 @@ namespace YRTool
 		public static List<ObjectPool> _pools = new List<ObjectPool>(_initialPoolsListCapacity);
 
 		/// <summary>
-		/// Adds a pooler to the static list if needed
+		/// 将该池加入静态池列表
 		/// </summary>
 		/// <param name="pool"></param>
 		public static void AddPool(ObjectPool pool)
@@ -45,7 +45,7 @@ namespace YRTool
 		}
 
 		/// <summary>
-		/// Removes a pooler from the static list
+		/// 将对象池从静态池列表中取出
 		/// </summary>
 		/// <param name="pool"></param>
 		public static void RemovePool(ObjectPool pool)
@@ -54,17 +54,16 @@ namespace YRTool
 		}
 
 		/// <summary>
-		/// On awake we fill our object pool
+		/// 当唤醒物体时，先填充物体池
 		/// </summary>
 		protected virtual void Awake()
 		{
 			Instance = this;
-			FillObjectPool();
-			
+			FillObjectPool();		
 		}
 
 		/// <summary>
-		/// Creates the waiting pool or tries to reuse one if there's already one available
+		/// 创造或重用一个对象池
 		/// </summary>
 		protected virtual bool CreateWaitingPool()
 		{
@@ -101,7 +100,7 @@ namespace YRTool
 		}
         
 		/// <summary>
-		/// Looks for an existing pooler for the same object, returns it if found, returns null otherwise
+		/// 寻找一个相同名字的对象池
 		/// </summary>
 		/// <param name="objectToPool"></param>
 		/// <returns></returns>
@@ -130,7 +129,7 @@ namespace YRTool
 		}
 
 		/// <summary>
-		/// If needed, nests the waiting pool under this object
+		/// 如果需要，则设置池的父对象为自己
 		/// </summary>
 		protected virtual void ApplyNesting()
 		{
@@ -141,7 +140,7 @@ namespace YRTool
 		}
 
 		/// <summary>
-		/// Determines the name of the object pool.
+		/// 生成物体的名字
 		/// </summary>
 		/// <returns>The object pool name.</returns>
 		protected virtual string DetermineObjectPoolName()
@@ -150,7 +149,7 @@ namespace YRTool
 		}
 
 		/// <summary>
-		/// Implement this method to fill the pool with objects
+		/// 填充对象池
 		/// </summary>
 		public virtual void FillObjectPool()
 		{
@@ -158,7 +157,7 @@ namespace YRTool
 		}
 
 		/// <summary>
-		/// Implement this method to return a gameobject
+		/// 实现这个方法来返回一个池化对象
 		/// </summary>
 		/// <returns>The pooled game object.</returns>
 		public virtual GameObject GetPooledGameObject()
@@ -167,7 +166,7 @@ namespace YRTool
 		}
 
 		/// <summary>
-		/// Destroys the object pool
+		/// 释放对象池
 		/// </summary>
 		public virtual void DestroyObjectPool()
 		{
@@ -178,7 +177,7 @@ namespace YRTool
 		}
 
 		/// <summary>
-		/// On enable we register to the scene loaded hook
+		/// 场景加载时事件添加
 		/// </summary>
 		protected virtual void OnEnable()
 		{
@@ -189,7 +188,7 @@ namespace YRTool
 		}
 
 		/// <summary>
-		/// OnSceneLoaded we recreate 
+		/// 场景加载时填充对象池
 		/// </summary>
 		/// <param name="scene"></param>
 		/// <param name="loadSceneMode"></param>
@@ -209,7 +208,7 @@ namespace YRTool
 		}
         
 		/// <summary>
-		/// On Destroy we remove ourselves from the list of poolers 
+		/// 销毁时将自己移除对象池列表
 		/// </summary>
 		private void OnDestroy()
 		{

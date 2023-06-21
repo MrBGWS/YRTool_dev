@@ -11,7 +11,7 @@ namespace YRTool.Tools
 	[AddComponentMenu("YRTool/Tools/Object Pool/SimpleObjectPooler")]
 	public class SimpleObjectPooler : ObjectPooler 
 	{
-		/// the game object we'll instantiate 
+		/// 单个对象池物体
 		public GameObject GameObjectToPool;
 		/// 对象池大小
 		public int PoolSize = 20;
@@ -22,7 +22,7 @@ namespace YRTool.Tools
 		private void OnDestroy() { Owner?.Remove(this); }
 
 		/// <summary>
-		/// Fills the object pool with the gameobject type you've specified in the inspector
+		/// 用对象池物体填充对象池
 		/// </summary>
 		public override void FillObjectPool()
 		{
@@ -31,7 +31,7 @@ namespace YRTool.Tools
 				return;
 			}
 
-			// if we've already created a pool, we exit
+			// 如果已经创建了对象池
 			if ((_objectPool != null) && (_objectPool.PooledGameObjects.Count > PoolSize))
 			{
 				return;

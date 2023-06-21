@@ -6,6 +6,8 @@ namespace YRTool
 	/// <summary>
 	/// 对象池对象
 	/// Destroy()时只是设成了未激活
+	/// 本身和对象池系统没有过多的耦合
+	/// 对象池基础对象仍然是GameObject
 	/// </summary>
 	[AddComponentMenu("YRTool/Tools/Object Pool/YRPoolableObject")]
 	public class PoolableObject : ObjectBounds

@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
-using MoreMountains.Tools;
 using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-namespace MoreMountains.Tools
+namespace YRTool
 {	
 	[Serializable]
 	/// <summary>
 	/// Multiple object pooler object.
+	/// 相对复杂的对象池系统，暂时搁置
 	/// </summary>
-	public class MMMultipleObjectPoolerObject
+	public class MultipleObjectPoolerObject
 	{
 		public GameObject GameObjectToPool;
 		public int PoolSize;
@@ -22,27 +22,24 @@ namespace MoreMountains.Tools
 	/// <summary>
 	/// The various methods you can pull objects from the pool with
 	/// </summary>
-	public enum MMPoolingMethods { OriginalOrder, OriginalOrderSequential, RandomBetweenObjects, RandomPoolSizeBased }
+	public enum PoolingMethods { OriginalOrder, OriginalOrderSequential, RandomBetweenObjects, RandomPoolSizeBased }
 
 	/// <summary>
 	/// This class allows you to have a pool of various objects to pool from.
 	/// </summary>
-	[AddComponentMenu("More Mountains/Tools/Object Pool/MMMultipleObjectPooler")]
-	public class MMMultipleObjectPooler : MMObjectPooler
+	[AddComponentMenu("YRTool/Tools/Object Pool/MMMultipleObjectPooler")]
+	public class MultipleObjectPooler : ObjectPooler
 	{
 		/// the list of objects to pool
-		public List<MMMultipleObjectPoolerObject> Pool;
-		[MMInformation("A MultipleObjectPooler is a reserve of objects, to be used by a Spawner. When asked, it will return an object from the pool (ideally an inactive one) chosen based on the pooling method you've chosen.\n- OriginalOrder will spawn objects in the order you've set them in the inspector (from top to bottom)\n- OriginalOrderSequential will do the same, but will empty each pool before moving to the next object\n- RandomBetweenObjects will pick one object from the pool, at random, but ignoring its pool size, each object has equal chances to get picked\n- PoolSizeBased randomly choses one object from the pool, based on its pool size probability (the larger the pool size, the higher the chances it'll get picked)'...",MoreMountains.Tools.MMInformationAttribute.InformationType.Info,false)]
+		public List<MultipleObjectPoolerObject> Pool;
 		/// the chosen pooling method
-		public MMPoolingMethods PoolingMethod = MMPoolingMethods.RandomPoolSizeBased;
-		[MMInformation("If you set CanPoolSameObjectTwice to false, the Pooler will try to prevent the same object from being pooled twice to avoid repetition. This will only affect random pooling methods, not ordered pooling.",MoreMountains.Tools.MMInformationAttribute.InformationType.Info,false)]
+		public PoolingMethods PoolingMethod = PoolingMethods.RandomPoolSizeBased;
 		/// whether or not the same object can be pooled twice in a row. If you set CanPoolSameObjectTwice to false, the Pooler will try to prevent the same object from being pooled twice to avoid repetition. This will only affect random pooling methods, not ordered pooling.
 		public bool CanPoolSameObjectTwice=true;
 		/// a unique name that should match on all MMMultipleObjectPoolers you want to use together
-		[MMCondition("MutualizeWaitingPools", true)]
 		public string MutualizedPoolName = "";
 		
-		public List<MMMultipleObjectPooler> Owner { get; set; }
+		public List<MultipleObjectPooler> Owner { get; set; }
 		private void OnDestroy() { Owner?.Remove(this); }
 		
 		/// the actual object pool
@@ -94,7 +91,7 @@ namespace MoreMountains.Tools
 			// if we're gonna pool in the original inspector order
 			switch (PoolingMethod)
 			{
-				case MMPoolingMethods.OriginalOrder:
+				case PoolingMethods.OriginalOrder:
 					stillObjectsToPool = true;
 					// we store our poolsizes in a temp array so it doesn't impact the inspector
 					poolSizes = new int[Pool.Count];
@@ -118,9 +115,9 @@ namespace MoreMountains.Tools
 						}
 					}
 					break;
-				case MMPoolingMethods.OriginalOrderSequential:
+				case PoolingMethods.OriginalOrderSequential:
 					// we store our poolsizes in a temp array so it doesn't impact the inspector
-					foreach (MMMultipleObjectPoolerObject pooledGameObject in Pool)
+					foreach (MultipleObjectPoolerObject pooledGameObject in Pool)
 					{
 						for (int i = 0; i < pooledGameObject.PoolSize ; i++ )
 						{
@@ -131,7 +128,7 @@ namespace MoreMountains.Tools
 				default:
 					int k = 0;
 					// for each type of object specified in the inspector
-					foreach (MMMultipleObjectPoolerObject pooledGameObject in Pool)
+					foreach (MultipleObjectPoolerObject pooledGameObject in Pool)
 					{
 						// if there's no specified number of objects to pool for that type of object, we do nothing and exit
 						if (k > Pool.Count) { return; }
@@ -182,16 +179,16 @@ namespace MoreMountains.Tools
 			GameObject pooledGameObject;
 			switch (PoolingMethod)
 			{
-				case MMPoolingMethods.OriginalOrder:
+				case PoolingMethods.OriginalOrder:
 					pooledGameObject = GetPooledGameObjectOriginalOrder();
 					break;
-				case MMPoolingMethods.RandomPoolSizeBased:
+				case PoolingMethods.RandomPoolSizeBased:
 					pooledGameObject =  GetPooledGameObjectPoolSizeBased();
 					break;
-				case MMPoolingMethods.RandomBetweenObjects:
+				case PoolingMethods.RandomBetweenObjects:
 					pooledGameObject =  GetPooledGameObjectRandomBetweenObjects();
 					break;
-				case MMPoolingMethods.OriginalOrderSequential:
+				case PoolingMethods.OriginalOrderSequential:
 					pooledGameObject =  GetPooledGameObjectOriginalOrderSequential();
 					break;
 				default:
@@ -222,7 +219,7 @@ namespace MoreMountains.Tools
 				ResetCurrentIndex ();
 			}
 
-			MMMultipleObjectPoolerObject searchedObject = GetPoolObject(Pool[_currentIndex].GameObjectToPool);
+			MultipleObjectPoolerObject searchedObject = GetPoolObject(Pool[_currentIndex].GameObjectToPool);
 
 			if (_currentIndex >= _objectPool.PooledGameObjects.Count) { return null; }
 			if (!searchedObject.Enabled) { _currentIndex++; return null; }
@@ -273,7 +270,7 @@ namespace MoreMountains.Tools
 				ResetCurrentIndex ();
 			}
 
-			MMMultipleObjectPoolerObject searchedObject = GetPoolObject(Pool[_currentIndex].GameObjectToPool);
+			MultipleObjectPoolerObject searchedObject = GetPoolObject(Pool[_currentIndex].GameObjectToPool);
 
 			if (_currentIndex >= _objectPool.PooledGameObjects.Count) { return null; }
 			if (!searchedObject.Enabled) { _currentIndex++; _currentCount = 0; return null; }
@@ -314,7 +311,7 @@ namespace MoreMountains.Tools
 			}
 		}
 
-		protected virtual void OrderSequentialResetCounter(MMMultipleObjectPoolerObject searchedObject)
+		protected virtual void OrderSequentialResetCounter(MultipleObjectPoolerObject searchedObject)
 		{
 			if (_currentCount >= searchedObject.PoolSize)
 			{
@@ -367,7 +364,7 @@ namespace MoreMountains.Tools
 				else
 				{
 					// if we couldn't find an inactive object of this type, we see if it can expand
-					MMMultipleObjectPoolerObject searchedObject = GetPoolObject(_objectPool.PooledGameObjects[randomIndex].gameObject);
+					MultipleObjectPoolerObject searchedObject = GetPoolObject(_objectPool.PooledGameObjects[randomIndex].gameObject);
 					if (searchedObject==null)
 					{
 						return null; 
@@ -576,14 +573,14 @@ namespace MoreMountains.Tools
 		/// </summary>
 		/// <returns>The pool object.</returns>
 		/// <param name="testedObject">Tested object.</param>
-		protected virtual MMMultipleObjectPoolerObject GetPoolObject(GameObject testedObject)
+		protected virtual MultipleObjectPoolerObject GetPoolObject(GameObject testedObject)
 		{
 			if (testedObject==null)
 			{
 				return null;
 			}
 			int i=0;
-			foreach(MMMultipleObjectPoolerObject poolerObject in Pool)
+			foreach(MultipleObjectPoolerObject poolerObject in Pool)
 			{
 				if (testedObject.name.Equals(poolerObject.GameObjectToPool.name))
 				{
@@ -596,7 +593,7 @@ namespace MoreMountains.Tools
 
 		protected virtual bool PoolObjectEnabled(GameObject testedObject)
 		{
-			MMMultipleObjectPoolerObject searchedObject = GetPoolObject(testedObject);
+			MultipleObjectPoolerObject searchedObject = GetPoolObject(testedObject);
 			if (searchedObject != null)
 			{
 				return searchedObject.Enabled;
@@ -609,7 +606,7 @@ namespace MoreMountains.Tools
 
 		public virtual void EnableObjects(string name,bool newStatus)
 		{
-			foreach(MMMultipleObjectPoolerObject poolerObject in Pool)
+			foreach(MultipleObjectPoolerObject poolerObject in Pool)
 			{
 				if (name.Equals(poolerObject.GameObjectToPool.name))
 				{
