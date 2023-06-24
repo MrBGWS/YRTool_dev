@@ -20,7 +20,6 @@ namespace YRTool
 		public event Events OnSpawnComplete;
 
 		[Header("Poolable Object")]
-		/// The life time, in seconds, of the object. If set to 0 it'll live forever, if set to any positive value it'll be set inactive after that time.
 		/// 生命周期，单位秒，如果设为0就是永远不自动销毁。
 		public float LifeTime = 0f;
 

@@ -5,6 +5,10 @@ using System;
 
 namespace YRTool
 {
+	/// <summary>
+	/// 有大小边界的物体
+	/// 优先渲染器Renderer再到碰撞体
+	/// </summary>
 	[AddComponentMenu("YRTool/Tools/Object Bounds/ObjectBounds")]
 	public class ObjectBounds : MonoBehaviour
 	{
