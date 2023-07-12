@@ -140,7 +140,7 @@ namespace YRTool
 
 			for (int i = list.Count - 1; i >= 0; i--)
 			{
-				(list[i] as EventListener<MMEvent>).OnMMEvent(newEvent);
+				(list[i] as EventListener<MMEvent>).OnYREvent(newEvent);
 			}
 		}
 
@@ -201,7 +201,7 @@ namespace YRTool
 	/// </summary>
 	public interface EventListener<T> : EventListenerBase
 	{
-		void OnMMEvent(T eventType);
+		void OnYREvent(T eventType);
 	}
 
 	/// <summary>
@@ -230,7 +230,7 @@ namespace YRTool
 		}
 
 		protected virtual TTarget OnEvent(TEvent eventType) => default;
-		public void OnMMEvent(TEvent eventType)
+		public void OnYREvent(TEvent eventType)
 		{
 			var item = OnEvent(eventType);
 			_callback?.Invoke(item);
